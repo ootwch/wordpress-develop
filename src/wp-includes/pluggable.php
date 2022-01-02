@@ -1114,7 +1114,6 @@ if ( ! function_exists( 'auth_redirect' ) ) :
 		$secure = apply_filters( 'secure_auth_redirect', $secure );
 
 		// If https is required and request is http, redirect.
-		wp_redirect(network_home_url( $_SERVER['REQUEST_URI'] ));
 		if ( $secure && ! is_ssl() && false !== strpos( $_SERVER['REQUEST_URI'], 'wp-admin' ) ) {
 			wp_redirect(network_home_url( $_SERVER['REQUEST_URI'] ));
 			exit;
