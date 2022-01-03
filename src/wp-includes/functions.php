@@ -7025,7 +7025,7 @@ function wp_auth_check_load() {
  */
 function wp_auth_check_html() {
 	$login_url      = wp_login_url();
-	$current_domain = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'];
+	$current_domain = network_home_url();
 	$same_domain    = ( strpos( $login_url, $current_domain ) === 0 );
 
 	/**
