@@ -1900,7 +1900,7 @@ function wp_nonce_field( $action = -1, $name = '_wpnonce', $referer = true, $ech
  */
 function wp_referer_field( $echo = true ) {
 	$request_url   = remove_query_arg( '_wp_http_referer' );
-	$referer_field = '<input type="hidden" name="_wp_http_referer" value="' . esc_url( $request_url ) . '" />';
+	$referer_field = '<input type="hidden" name="_wp_http_referer" value="' . esc_url( network_home_url( $request_url, 'relative' ) ) . '" />';
 
 	if ( $echo ) {
 		echo $referer_field;
@@ -1927,7 +1927,7 @@ function wp_original_referer_field( $echo = true, $jump_back_to = 'current' ) {
 	$ref = wp_get_original_referer();
 
 	if ( ! $ref ) {
-		$ref = ( 'previous' === $jump_back_to ) ? wp_get_referer() : wp_unslash( $_SERVER['REQUEST_URI'] );
+		$ref = ( 'previous' === $jump_back_to ) ? wp_get_referer() : wp_unslash( network_home_url( $_SERVER['REQUEST_URI'] ) );
 	}
 
 	$orig_referer_field = '<input type="hidden" name="_wp_original_http_referer" value="' . esc_attr( $ref ) . '" />';
@@ -7107,7 +7107,7 @@ function wp_auth_check_load() {
  */
 function wp_auth_check_html() {
 	$login_url      = wp_login_url();
-	$current_domain = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'];
+	$current_domain = network_home_url();
 	$same_domain    = ( strpos( $login_url, $current_domain ) === 0 );
 
 	/**

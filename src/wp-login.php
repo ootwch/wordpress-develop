@@ -14,10 +14,10 @@ require __DIR__ . '/wp-load.php';
 // Redirect to HTTPS login if forced to use SSL.
 if ( force_ssl_admin() && ! is_ssl() ) {
 	if ( 0 === strpos( $_SERVER['REQUEST_URI'], 'http' ) ) {
-		wp_safe_redirect( set_url_scheme( $_SERVER['REQUEST_URI'], 'https' ) );
+		wp_safe_redirect( network_home_url( $_SERVER['REQUEST_URI'], 'https' ) );
 		exit;
 	} else {
-		wp_safe_redirect( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+		wp_safe_redirect( network_home_url( $_SERVER['REQUEST_URI'] ) );
 		exit;
 	}
 }
@@ -468,7 +468,7 @@ if ( defined( 'RELOCATE' ) && RELOCATE ) { // Move flag is set.
 		$_SERVER['PHP_SELF'] = str_replace( $_SERVER['PATH_INFO'], '', $_SERVER['PHP_SELF'] );
 	}
 
-	$url = dirname( set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] ) );
+	$url = dirname( network_home_url( $_SERVER['PHP_SELF'] ) );
 
 	if ( get_option( 'siteurl' ) !== $url ) {
 		update_option( 'siteurl', $url );
