@@ -1100,7 +1100,7 @@ if ( ! function_exists( 'auth_redirect' ) ) :
 
 		// If https is required and request is http, redirect.
 		if ( $secure && ! is_ssl() && false !== strpos( $_SERVER['REQUEST_URI'], 'wp-admin' ) ) {
-			wp_redirect(network_home_url( $_SERVER['REQUEST_URI'] ));
+			wp_redirect( network_home_url( $_SERVER['REQUEST_URI'] ) );
 			exit;
 		}
 
@@ -1126,7 +1126,7 @@ if ( ! function_exists( 'auth_redirect' ) ) :
 
 			// If the user wants ssl but the session is not ssl, redirect.
 			if ( ! $secure && get_user_option( 'use_ssl', $user_id ) && false !== strpos( $_SERVER['REQUEST_URI'], 'wp-admin' ) ) {
-				wp_redirect(network_home_url( $_SERVER['REQUEST_URI'] ));
+				wp_redirect( network_home_url( $_SERVER['REQUEST_URI'] ) );
 				exit;
 			}
 
