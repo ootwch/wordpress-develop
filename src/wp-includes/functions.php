@@ -1881,7 +1881,7 @@ function wp_nonce_field( $action = -1, $name = '_wpnonce', $referer = true, $ech
  * @return string Referer field HTML markup.
  */
 function wp_referer_field( $echo = true ) {
-	$referer_field = '<input type="hidden" name="_wp_http_referer" value="' . esc_attr( wp_unslash( network_home_url( $_SERVER['REQUEST_URI'], 'relative' ) ) ) . '" />';
+	$referer_field = '<input type="hidden" name="_wp_http_referer" value="' . esc_attr( wp_unslash( network_home_url( $_SERVER['REQUEST_URI'] ) ) ) . '" />';
 
 	if ( $echo ) {
 		echo $referer_field;
@@ -1908,7 +1908,7 @@ function wp_original_referer_field( $echo = true, $jump_back_to = 'current' ) {
 	$ref = wp_get_original_referer();
 
 	if ( ! $ref ) {
-		$ref = ( 'previous' === $jump_back_to ) ? wp_get_referer() : wp_unslash( network_home_url( $_SERVER['REQUEST_URI'], 'relative' ) );
+		$ref = ( 'previous' === $jump_back_to ) ? wp_get_referer() : wp_unslash( network_home_url( $_SERVER['REQUEST_URI'] ) );
 	}
 
 	$orig_referer_field = '<input type="hidden" name="_wp_original_http_referer" value="' . esc_attr( $ref ) . '" />';
@@ -1936,7 +1936,7 @@ function wp_get_referer() {
 
 	$ref = wp_get_raw_referer();
 
-	if ( $ref && wp_unslash( $_SERVER['REQUEST_URI'] ) !== $ref && home_url() . wp_unslash( network_home_url( $_SERVER['REQUEST_URI'], 'relative' ) ) !== $ref ) {
+	if ( $ref && wp_unslash( $_SERVER['REQUEST_URI'] ) !== $ref && home_url() . wp_unslash( $_SERVER['REQUEST_URI'] ) !== $ref ) {
 		return wp_validate_redirect( $ref, false );
 	}
 
@@ -1956,7 +1956,7 @@ function wp_get_raw_referer() {
 	if ( ! empty( $_REQUEST['_wp_http_referer'] ) ) {
 		return wp_unslash( $_REQUEST['_wp_http_referer'] );
 	} elseif ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {
-		return wp_unslash( network_home_url( $_SERVER['HTTP_REFERER'], 'relative' ) );
+		return wp_unslash( $_SERVER['HTTP_REFERER'] );
 	}
 
 	return false;
