@@ -1936,7 +1936,7 @@ function wp_get_referer() {
 
 	$ref = wp_get_raw_referer();
 
-	if ( $ref && wp_unslash( $_SERVER['REQUEST_URI'] ) !== $ref && home_url() . wp_unslash( network_home_url ( $_SERVER['REQUEST_URI'] ) ) !== $ref ) {
+	if ( $ref && wp_unslash( $_SERVER['REQUEST_URI'] ) !== $ref && home_url() . wp_unslash( network_home_url( $_SERVER['REQUEST_URI'] ) ) !== $ref ) {
 		return wp_validate_redirect( $ref, false );
 	}
 
