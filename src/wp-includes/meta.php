@@ -496,12 +496,11 @@ function delete_metadata( $meta_type, $object_id, $meta_key, $meta_value = '', $
 	}
 
 	if ( $delete_all ) {
-		foreach ( (array) $object_ids as $o_id ) {
-			wp_cache_delete( $o_id, $meta_type . '_meta' );
-		}
+		$data = (array) $object_ids;
 	} else {
-		wp_cache_delete( $object_id, $meta_type . '_meta' );
+		$data = array( $object_id );
 	}
+	wp_cache_delete_multiple( $data, $meta_type . '_meta' );
 
 	/**
 	 * Fires immediately after deleting metadata of a specific type.
@@ -1191,12 +1190,14 @@ function update_meta_cache( $meta_type, $object_ids ) {
 		}
 	}
 
+	$data = array();
 	foreach ( $non_cached_ids as $id ) {
 		if ( ! isset( $cache[ $id ] ) ) {
 			$cache[ $id ] = array();
 		}
-		wp_cache_add( $id, $cache[ $id ], $cache_key );
+		$data[ $id ] = $cache[ $id ];
 	}
+	wp_cache_add_multiple( $data, $cache_key );
 
 	return $cache;
 }
@@ -1634,7 +1635,7 @@ function unregister_meta_key( $object_type, $meta_key, $object_subtype = '' ) {
 }
 
 /**
- * Retrieves a list of registered meta keys for an object type.
+ * Retrieves a list of registered metadata args for an object type, keyed by their meta keys.
  *
  * @since 4.6.0
  * @since 4.9.8 The `$object_subtype` parameter was added.
@@ -1642,7 +1643,7 @@ function unregister_meta_key( $object_type, $meta_key, $object_subtype = '' ) {
  * @param string $object_type    Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
  *                               or any other object type with an associated meta table.
  * @param string $object_subtype Optional. The subtype of the object type.
- * @return string[] List of registered meta keys.
+ * @return array[] List of registered metadata args, keyed by their meta keys.
  */
 function get_registered_meta_keys( $object_type, $object_subtype = '' ) {
 	global $wp_meta_keys;
