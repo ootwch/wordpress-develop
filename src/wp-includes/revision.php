@@ -17,7 +17,7 @@
  * @param array|WP_Post $post       Optional. A post array or a WP_Post object being processed
  *                                  for insertion as a post revision. Default empty array.
  * @param bool          $deprecated Not used.
- * @return array Array of fields that can be versioned.
+ * @return string[] Array of fields that can be versioned.
  */
 function _wp_post_revision_fields( $post = array(), $deprecated = false ) {
 	static $fields = null;
@@ -47,9 +47,9 @@ function _wp_post_revision_fields( $post = array(), $deprecated = false ) {
 	 * @since 2.6.0
 	 * @since 4.5.0 The `$post` parameter was added.
 	 *
-	 * @param array $fields List of fields to revision. Contains 'post_title',
-	 *                      'post_content', and 'post_excerpt' by default.
-	 * @param array $post   A post array being processed for insertion as a post revision.
+	 * @param string[] $fields List of fields to revision. Contains 'post_title',
+	 *                         'post_content', and 'post_excerpt' by default.
+	 * @param array    $post   A post array being processed for insertion as a post revision.
 	 */
 	$fields = apply_filters( '_wp_post_revision_fields', $fields, $post );
 
@@ -220,7 +220,7 @@ function wp_save_post_revision( $post_id ) {
 }
 
 /**
- * Retrieve the autosaved data of the specified post.
+ * Retrieves the autosaved data of the specified post.
  *
  * Returns a post object with the information that was autosaved for the specified post.
  * If the optional $user_id is passed, returns the autosave for that user, otherwise
@@ -231,7 +231,7 @@ function wp_save_post_revision( $post_id ) {
  * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param int $post_id The post ID.
- * @param int $user_id Optional The post author ID.
+ * @param int $user_id Optional. The post author ID.
  * @return WP_Post|false The autosaved data or false on failure or when no autosave exists.
  */
 function wp_get_post_autosave( $post_id, $user_id = 0 ) {
@@ -313,7 +313,7 @@ function wp_is_post_autosave( $post ) {
  * @access private
  *
  * @param int|WP_Post|array|null $post     Post ID, post object OR post array.
- * @param bool                   $autosave Optional. Is the revision an autosave?
+ * @param bool                   $autosave Optional. Whether the revision is an autosave or not.
  * @return int|WP_Error WP_Error or 0 if error, new revision ID if success.
  */
 function _wp_put_post_revision( $post = null, $autosave = false ) {
@@ -362,7 +362,7 @@ function _wp_put_post_revision( $post = null, $autosave = false ) {
  * @param string      $output Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
  *                            correspond to a WP_Post object, an associative array, or a numeric array,
  *                            respectively. Default OBJECT.
- * @param string      $filter Optional sanitation filter. See sanitize_post().
+ * @param string      $filter Optional sanitization filter. See sanitize_post().
  * @return WP_Post|array|null WP_Post (or array) on success, or null on failure.
  */
 function wp_get_post_revision( &$post, $output = OBJECT, $filter = 'raw' ) {
@@ -489,7 +489,7 @@ function wp_delete_post_revision( $revision ) {
  *
  * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is global `$post`.
  * @param array|null  $args Optional. Arguments for retrieving post revisions. Default null.
- * @return array An array of revisions, or an empty array if none.
+ * @return WP_Post[]|int[] Array of revision objects or IDs, or an empty array if none.
  */
 function wp_get_post_revisions( $post = 0, $args = null ) {
 	$post = get_post( $post );
@@ -613,7 +613,7 @@ function wp_get_post_revisions_url( $post = 0 ) {
 }
 
 /**
- * Determine if revisions are enabled for a given post.
+ * Determines whether revisions are enabled for a given post.
  *
  * @since 3.6.0
  *
@@ -625,7 +625,7 @@ function wp_revisions_enabled( $post ) {
 }
 
 /**
- * Determine how many revisions to retain for a given post.
+ * Determines how many revisions to retain for a given post.
  *
  * By default, an infinite number of revisions are kept.
  *
@@ -830,16 +830,16 @@ function _wp_get_post_revision_version( $revision ) {
 }
 
 /**
- * Upgrade the revisions author, add the current post as a revision and set the revisions version to 1
+ * Upgrades the revisions author, adds the current post as a revision and sets the revisions version to 1.
  *
  * @since 3.6.0
  * @access private
  *
  * @global wpdb $wpdb WordPress database abstraction object.
  *
- * @param WP_Post $post      Post object
- * @param array   $revisions Current revisions of the post
- * @return bool true if the revisions were upgraded, false if problems
+ * @param WP_Post $post      Post object.
+ * @param array   $revisions Current revisions of the post.
+ * @return bool true if the revisions were upgraded, false if problems.
  */
 function _wp_upgrade_revisions_of_post( $post, $revisions ) {
 	global $wpdb;
