@@ -1237,11 +1237,9 @@ class Test_Query_CacheResults extends WP_UnitTestCase {
 
 		$query_1 = new WP_Query(
 			array(
-				'post_type'              => 'page',
-				'fields'                 => $fields,
-				'author'                 => self::$author_id,
-				'update_post_meta_cache' => false,
-				'update_post_term_cache' => false,
+				'post_type' => 'page',
+				'fields'    => $fields,
+				'author'    => self::$author_id,
 			)
 		);
 
@@ -1249,11 +1247,6 @@ class Test_Query_CacheResults extends WP_UnitTestCase {
 		$start_loop_queries = get_num_queries();
 		$query_1->the_post();
 		$num_loop_queries = get_num_queries() - $start_loop_queries;
-		/*
-		 * Two expected queries:
-		 * 1: User meta data,
-		 * 2: User data.
-		 */
 		$this->assertSame( 2, $num_loop_queries, 'Unexpected number of queries while initializing the loop.' );
 
 		$start_author_queries = get_num_queries();
