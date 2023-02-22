@@ -323,8 +323,6 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 
 		list( $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h ) = $dims;
 
-		self::setImagickTimeLimit();
-
 		if ( $crop ) {
 			return $this->crop( $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h );
 		}
