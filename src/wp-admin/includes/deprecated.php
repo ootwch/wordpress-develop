@@ -524,6 +524,8 @@ class WP_User_Search {
 	 *
 	 * @since 2.1.0
 	 * @access public
+	 *
+	 * @global wpdb $wpdb WordPress database abstraction object.
 	 */
 	public function prepare_query() {
 		global $wpdb;
@@ -562,6 +564,8 @@ class WP_User_Search {
 	 *
 	 * @since 2.1.0
 	 * @access public
+	 *
+	 * @global wpdb $wpdb WordPress database abstraction object.
 	 */
 	public function query() {
 		global $wpdb;
@@ -1361,7 +1365,7 @@ function wp_dashboard_plugins_output( $rss, $args = array() ) {
 			// Is this random plugin's slug already installed? If so, try again.
 			reset( $plugin_slugs );
 			foreach ( $plugin_slugs as $plugin_slug ) {
-				if ( $slug == substr( $plugin_slug, 0, strlen( $slug ) ) ) {
+				if ( $slug === substr( $plugin_slug, 0, strlen( $slug ) ) ) {
 					unset( $items[$item_key] );
 					continue 2;
 				}

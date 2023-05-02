@@ -46,6 +46,46 @@ class Tests_Term_Query extends WP_UnitTestCase {
 		$this->assertSameSets( array( $term_2 ), $q->terms );
 	}
 
+	/**
+	 * @ticket 57645
+	 */
+	public function test_lazy_load_term_meta() {
+		$filter = new MockAction();
+		add_filter( 'update_term_metadata_cache', array( $filter, 'filter' ), 10, 2 );
+		register_taxonomy( 'wptests_tax_1', 'post' );
+		register_taxonomy( 'wptests_tax_2', 'post' );
+
+		$term_1 = self::factory()->term->create( array( 'taxonomy' => 'wptests_tax_1' ) );
+		$term_2 = self::factory()->term->create( array( 'taxonomy' => 'wptests_tax_2' ) );
+
+		$q = new WP_Term_Query(
+			array(
+				'taxonomy'   => 'wptests_tax_1',
+				'fields'     => 'ids',
+				'hide_empty' => false,
+			)
+		);
+
+		$this->assertSameSets( array( $term_1 ), $q->terms );
+
+		$q = new WP_Term_Query(
+			array(
+				'taxonomy'   => 'wptests_tax_2',
+				'fields'     => 'ids',
+				'hide_empty' => false,
+			)
+		);
+
+		$this->assertSameSets( array( $term_2 ), $q->terms );
+
+		get_term_meta( $term_1 );
+
+		$args     = $filter->get_args();
+		$first    = reset( $args );
+		$term_ids = end( $first );
+		$this->assertSameSets( $term_ids, array( $term_1, $term_2 ) );
+	}
+
 	public function test_taxonomy_should_accept_taxonomy_array() {
 		register_taxonomy( 'wptests_tax_1', 'post' );
 		register_taxonomy( 'wptests_tax_2', 'post' );
@@ -866,5 +906,125 @@ class Tests_Term_Query extends WP_UnitTestCase {
 		);
 
 		$this->assertContains( $t1, $q->terms );
+	}
+
+	/**
+	 * Ensure cache keys are generated without WPDB placeholders.
+	 *
+	 * @ticket 57298
+	 *
+	 * @covers       WP_Term_Query::generate_cache_key
+	 * @dataProvider data_query_cache
+	 */
+	public function test_generate_cache_key_placeholder( $args ) {
+		global $wpdb;
+		$query1 = new WP_Term_Query();
+		$query1->query( $args );
+
+		$query_vars = $query1->query_vars;
+		$request    = $query1->request;
+
+		$reflection = new ReflectionMethod( $query1, 'generate_cache_key' );
+		$reflection->setAccessible( true );
+
+		$cache_key_1 = $reflection->invoke( $query1, $query_vars, $request );
+
+		$request_without_placeholder = $wpdb->remove_placeholder_escape( $request );
+
+		$cache_key_2 = $reflection->invoke( $query1, $query_vars, $request_without_placeholder );
+
+		$this->assertSame( $cache_key_1, $cache_key_2, 'Cache key differs when using wpdb placeholder.' );
+	}
+
+	/**
+	 * Data provider.
+	 *
+	 * @return array[] Test parameters.
+	 */
+	public function data_query_cache() {
+		return array(
+			'empty query'                => array(
+				'args' => array(),
+			),
+			'search query'               => array(
+				'args' => array(
+					'search' => 'title',
+				),
+			),
+			'search name query'          => array(
+				'args' => array(
+					'name__like' => 'title',
+				),
+			),
+			'search description query'   => array(
+				'args' => array(
+					'description__like' => 'title',
+				),
+			),
+			'meta query'                 => array(
+				'args' => array(
+					'meta_query' => array(
+						array(
+							'key' => 'color',
+						),
+					),
+				),
+			),
+			'meta query search'          => array(
+				'args' => array(
+					'meta_query' => array(
+						array(
+							'key'     => 'color',
+							'value'   => '00',
+							'compare' => 'LIKE',
+						),
+					),
+				),
+			),
+			'nested meta query search'   => array(
+				'args' => array(
+					'meta_query' => array(
+						'relation' => 'AND',
+						array(
+							'key'     => 'color',
+							'value'   => '00',
+							'compare' => 'LIKE',
+						),
+						array(
+							'relation' => 'OR',
+							array(
+								'key'     => 'color',
+								'value'   => '00',
+								'compare' => 'LIKE',
+							),
+							array(
+								'relation' => 'AND',
+								array(
+									'key'     => 'wp_test_suite',
+									'value'   => '56802',
+									'compare' => 'LIKE',
+								),
+								array(
+									'key'     => 'wp_test_suite_too',
+									'value'   => '56802',
+									'compare' => 'LIKE',
+								),
+							),
+						),
+					),
+				),
+			),
+			'meta query not like search' => array(
+				'args' => array(
+					'meta_query' => array(
+						array(
+							'key'     => 'color',
+							'value'   => 'ff',
+							'compare' => 'NOT LIKE',
+						),
+					),
+				),
+			),
+		);
 	}
 }
