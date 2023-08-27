@@ -1394,7 +1394,6 @@ function wp_admin_canonical_url() {
 	}
 
 	// Ensure we're using an absolute URL.
-	$current_url  = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 	$filtered_url = remove_query_arg( $removable_query_args );
 
 	/**
