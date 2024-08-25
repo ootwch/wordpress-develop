@@ -469,7 +469,7 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 			$active_parent_item_ids[] = (int) $menu_item->menu_item_parent;
 
 			// If the menu item corresponds to the currently requested URL.
-		} elseif ( 'custom' === $menu_item->object && isset( $_SERVER['HTTP_HOST'] ) ) {
+		} elseif ( 'custom' === $menu_item->object ) {
 			$_root_relative_current = untrailingslashit( $_SERVER['REQUEST_URI'] );
 
 			// If it's the customize page then it will strip the query var off the URL before entering the comparison block.
