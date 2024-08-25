@@ -23,6 +23,7 @@ server {
 
 	location / {
 		try_files $uri $uri/ /index.php?$args;
+
 	}
 
 	location ~ \.php$ {
@@ -34,5 +35,6 @@ server {
 		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 		fastcgi_param PATH_INFO $fastcgi_path_info;
 		fastcgi_pass_header Authorization;
+		fastcgi_read_timeout 3600;
 	}
 }
