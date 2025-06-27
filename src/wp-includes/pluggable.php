@@ -3200,17 +3200,6 @@ if ( ! function_exists( 'get_avatar' ) ) :
 			$extra_attr .= "decoding='{$args['decoding']}'";
 		}
 
-		// Add support for `fetchpriority`.
-		if ( in_array( $args['fetchpriority'], array( 'high', 'low', 'auto' ), true )
-			&& ! preg_match( '/\bfetchpriority\s*=/', $extra_attr )
-		) {
-			if ( ! empty( $extra_attr ) ) {
-				$extra_attr .= ' ';
-			}
-
-			$extra_attr .= "fetchpriority='{$args['fetchpriority']}'";
-		}
-
 		$avatar = sprintf(
 			"<img alt='%s' src='%s' srcset='%s' class='%s' height='%d' width='%d' %s/>",
 			esc_attr( $args['alt'] ),
