@@ -30,6 +30,13 @@ services:
       mysql:
         condition: service_healthy
 
+    deploy:
+          resources:
+            limits:
+              cpus: '0.90'
+              memory: 2G
+
+
   ##
   # The PHP container.
   ##
@@ -59,11 +66,21 @@ services:
     # Copy or delete the Memcached dropin plugin file as appropriate.
     command: /bin/sh -c "if [ $LOCAL_PHP_MEMCACHED = true ]; then cp -n /var/www/tests/phpunit/includes/object-cache.php /var/www/src/wp-content/object-cache.php; else rm -f /var/www/src/wp-content/object-cache.php; fi && exec php-fpm"
 
+    depends_on:
+      - mysql
+
     # The init directive ensures the command runs with a PID > 1, so Ctrl+C works correctly.
     init: true
 
     extra_hosts:
       - localhost:host-gateway
+      - docker-host:host-gateway
+
+    deploy:
+          resources:
+            limits:
+              cpus: '1.90'
+              memory: 2G
 
   ##
   # The MySQL container.
@@ -75,7 +92,7 @@ services:
       - wpdevnet
 
     ports:
-      - "3306"
+      - 32770:3306
 
     environment:
       MYSQL_ROOT_PASSWORD: password
@@ -95,6 +112,13 @@ services:
       timeout: 5s
       interval: 5s
       retries: 10
+
+    deploy:
+          resources:
+            limits:
+              cpus: '0.90'
+              memory: 2G
+
 
   ##
   # The WP CLI container.
