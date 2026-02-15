@@ -1397,7 +1397,7 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 		}
 
 		if ( $_SERVER['HTTP_HOST'] === $domain ) {
-		$image_baseurl = set_url_scheme( $image_baseurl, 'https' );
+			$image_baseurl = set_url_scheme( $image_baseurl, 'https' );
 		}
 	}
 
